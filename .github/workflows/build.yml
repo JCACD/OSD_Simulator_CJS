@@ -8,7 +8,10 @@ jobs:
         with:
           submodules: false
           
-      - name: Build with MSVC (cl.exe)
+      - name: Setup MSVC Environment  # 加入這一步：初始化 MSVC 環境
+        uses: ilammy/msvc-dev-cmd@v1
+          
+      - name: Build with MSVC
         run: |
           cl /EHsc src/main.cpp /Fe:kvm_core.exe
           
