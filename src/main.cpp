@@ -1,33 +1,16 @@
 #include <iostream>
-#include <cstdlib>
-#include <string>
-
-// 獲取目前執行檔路徑並拼接 UI 路徑
-std::string getUIPath() {
-    return "ui/index.html"; // 執行時需在專案根目錄
-}
+#include <windows.h> // Windows 專用
 
 int main() {
-    std::cout << "Starting OSD Simulator..." << std::endl;
+    std::cout << "Starting IP-KVM OSD (Windows Mode)..." << std::endl;
 
-    // 跨平台開啟 HTML 的指令
-    #ifdef _WIN32
-        std::string cmd = "start " + getUIPath();
-    #else
-        std::string cmd = "xdg-open " + getUIPath() + " &";
-    #endif
+    // 使用 ShellExecute 開啟網頁，這比 system("start...") 更穩定
+    ShellExecute(NULL, "open", "ui\\index.html", NULL, NULL, SW_SHOWNORMAL);
 
-    std::cout << "Launching UI: " << cmd << std::endl;
-    system(cmd.c_str());
-
-    // 模擬核心監控
+    // 核心監控模擬
     while (true) {
         std::cout << "Monitoring... (Press Ctrl+C to stop)" << std::endl;
-        #ifdef _WIN32
-            Sleep(5000);
-        #else
-            sleep(5);
-        #endif
+        Sleep(5000); // Windows 專用的睡眠函數
     }
     return 0;
 }
