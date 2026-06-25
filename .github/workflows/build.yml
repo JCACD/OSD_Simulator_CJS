@@ -1,0 +1,18 @@
+name: Build IP-KVM OSD
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Cross Compiler
+        run: sudo apt-get install -y g++-aarch64-linux-gnu
+      - name: Build
+        run: make
+      - name: Archive
+        uses: actions/upload-artifact@v3
+        with:
+          name: kvm-osd-app
+          path: |
+            kvm_core
+            ui/
