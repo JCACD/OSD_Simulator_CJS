@@ -1,5 +1,5 @@
-# Makefile
-CXX = aarch64-linux-gnu-g++
+# Makefile (適用於 PC)
+CXX = g++
 CXXFLAGS = -Wall -O2
 
 all: kvm_core

@@ -1,24 +1,33 @@
 #include <iostream>
 #include <cstdlib>
-#include <unistd.h>
+#include <string>
+
+// 獲取目前執行檔路徑並拼接 UI 路徑
+std::string getUIPath() {
+    return "ui/index.html"; // 執行時需在專案根目錄
+}
 
 int main() {
-    std::cout << "Starting IP-KVM Core..." << std::endl;
+    std::cout << "Starting OSD Simulator..." << std::endl;
 
-    // 啟動 UI (呼叫系統瀏覽器)
-    pid_t pid = fork();
-    if (pid == 0) {
-        // 請確保板子上已安裝 chromium-browser
-        execlp("chromium-browser", "chromium-browser", 
-               "--kiosk", "--app=file:///home/root/osd/ui/index.html", NULL);
-        exit(0);
-    }
+    // 跨平台開啟 HTML 的指令
+    #ifdef _WIN32
+        std::string cmd = "start " + getUIPath();
+    #else
+        std::string cmd = "xdg-open " + getUIPath() + " &";
+    #endif
 
-    // 核心硬體監控迴圈
+    std::cout << "Launching UI: " << cmd << std::endl;
+    system(cmd.c_str());
+
+    // 模擬核心監控
     while (true) {
-        // TODO: 在此處加入 SPI 讀取程式碼
-        std::cout << "Core running: Monitoring SPI..." << std::endl;
-        sleep(5);
+        std::cout << "Monitoring... (Press Ctrl+C to stop)" << std::endl;
+        #ifdef _WIN32
+            Sleep(5000);
+        #else
+            sleep(5);
+        #endif
     }
     return 0;
 }

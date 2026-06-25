@@ -1,18 +1,24 @@
-name: Build IP-KVM OSD
+name: Build PC OSD Simulator
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install Cross Compiler
-        run: sudo apt-get install -y g++-aarch64-linux-gnu
       - name: Build
-        run: make
-      - name: Archive
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            g++ -o kvm_core.exe src/main.cpp
+          else
+            g++ -o kvm_core src/main.cpp
+          fi
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: kvm-osd-app
+          name: osd-app-${{ matrix.os }}
           path: |
-            kvm_core
+            kvm_core*
             ui/
